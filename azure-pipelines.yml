@@ -1,0 +1,20 @@
+#test
+trigger:
+- main
+
+pool:
+  vmImage: 'macOs-latest'
+
+steps:
+
+- script: |
+    mkdir build ; cd build
+    cmake ../llvm -DLLVM_ENABLE_PROJECTS="clang;libcxx;lldb"
+    make lldb lldb-server
+    cd lldb
+    zip -r lldb-m1.zip bin/ lib/liblldb.12.0.0git.dylib lib/liblldb.dylib
+  displayName: 'Run a multi-line script'
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: $(System.DefaultWorkingDirectory)/build
+    artifactName: test1
